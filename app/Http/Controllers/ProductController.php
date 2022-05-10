@@ -29,7 +29,7 @@ class ProductController extends Controller
             $cart->user_id=$req->session()->get('user')['id'];
             $cart->product_id=$req->product_id;
             $cart->save();
-            return redirect('/');    
+            return redirect('/cartlist');    
         }
         else
         {
@@ -41,16 +41,47 @@ class ProductController extends Controller
         $userId=Session::get('user')['id'];
         return Cart::where('user_id',$userId)->count();
     }
-    function cartList()
+    function cartList(Request $req)
+    {
+         if($req->session()->has('user'))
+        {
+            $userId=Session::get('user')['id'];
+            $products=DB::table('cart')
+            ->join('products','cart.product_id','=','products.id')
+            ->where('cart.user_id',$userId)
+            ->select('products.*','cart.id as cart_id')
+            ->get();
+    
+            return view('cartlist',['products'=>$products]);   
+        }
+        else
+        {
+            return redirect('login');
+        }
+       
+    }
+    function search(Request $req)
+    {
+        $data= Product::
+        where('name', 'like', '%'.$req->input('query').'%')
+        ->get();
+        return view('search',['products'=>$data]);
+    }
+    function removeCart($id)
+    {
+        Cart::destroy($id);
+        return redirect('cartlist');
+    }
+    function orderNow()
     {
         $userId=Session::get('user')['id'];
-        $products=DB::table('cart')
-        ->join('products','cart.product_id','=','products.id')
-        ->where('cart.user_id',$userId)
-        ->select('products.*')
-        ->get();
-
-        return view('cartlist',['products'=>$products]);
+            $total= $products=DB::table('cart')
+            ->join('products','cart.product_id','=','products.id')
+            ->where('cart.user_id',$userId)
+            ->select('products.*','cart.id as cart_id')
+            ->sum('products.price');
+    
+            return view('ordernow',['total'=>$total]);
     }
     
 }
