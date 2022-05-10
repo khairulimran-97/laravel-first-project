@@ -25,15 +25,16 @@
      </div>
 <div>
     <div class="col-sm-10">
-     <form action="/action_page.php">
+     <form action="/orderplace" method="POST">
+      @csrf
         <div class="form-group">
-          <textarea type="email" placeholder="Enter Your Address" class="form-control" ></textarea>
+          <textarea name="address" placeholder="Enter Your Address" class="form-control" ></textarea>
         </div>
         <div class="form-group">
           <label for="pwd">Payment Method</label><br><br>
-          <input type="radio" name="payment"><span>Online Payment</span><br><br>
-          <input type="radio" name="payment"><span>COD</span><br><br>
-          <input type="radio" name="payment"><span>Bayarcash</span><br><br>
+          <input type="radio" value="cash" name="payment"><span>Online Payment</span><br><br>
+          <input type="radio" value="cash" name="payment"><span>COD</span><br><br>
+          <input type="radio" value="cash" name="payment"><span>Bayarcash</span><br><br>
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
